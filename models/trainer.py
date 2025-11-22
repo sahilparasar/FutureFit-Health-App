@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 from sklearn.multioutput import MultiOutputClassifier
 import joblib
 
@@ -39,7 +39,7 @@ class HealthRiskPredictor:
         cardio_risk = (
             (df_processed['WH_Ratio'] > 0.9) | 
             (df_processed['VO2_Max_Estimate'] < 35) |
-            (df_processed['Pushups'] < 15)  # Fixed threshold
+            (df_processed['Pushups'] < 15)
         ).astype(int)
         
         # Musculoskeletal Risk (based on grip strength, balance, flexibility)
@@ -81,14 +81,14 @@ class HealthRiskPredictor:
         print("Target distribution:")
         print(y.mean())
         
-        # Train model
+        # Train model WITHOUT SMOTE (removed dependency)
         self.model = MultiOutputClassifier(
             RandomForestClassifier(
-                n_estimators=50,  # Reduced for faster training
+                n_estimators=50,
                 max_depth=8,
                 min_samples_split=5,
                 random_state=42,
-                class_weight='balanced'  # Handle imbalance
+                class_weight='balanced'  # Handle imbalance without SMOTE
             )
         )
         
@@ -98,14 +98,6 @@ class HealthRiskPredictor:
         train_predictions = self.model.predict(X)
         train_accuracy = accuracy_score(y, train_predictions)
         print(f"Training accuracy: {train_accuracy:.3f}")
-        
-        # Show feature importance for first estimator
-        try:
-            feature_importance = self.model.estimators_[0].feature_importances_
-            print(f"Top 5 most important features for Cardiovascular Risk:")
-            # This would show which features matter most
-        except:
-            pass
         
         return self
     

@@ -13,12 +13,6 @@ try:
     print("✅ All imports successful!")
 except ImportError as e:
     print(f"❌ Import error: {e}")
-    print("Current directory:", os.path.dirname(__file__))
-    print("Files in current directory:", os.listdir('.'))
-    if os.path.exists('models'):
-        print("Files in models:", os.listdir('models'))
-    if os.path.exists('utils'):
-        print("Files in utils:", os.listdir('utils'))
     sys.exit(1)
 
 def main():
@@ -29,9 +23,6 @@ def main():
         print("Generating sample health data...")
         df = generate_sample_data()
         print(f"✅ Generated {len(df)} sample records")
-        print("Data columns:", df.columns.tolist())
-        print("First row sample:")
-        print(df.iloc[0])
         
         print("Preprocessing data...")
         preprocessor = HealthDataPreprocessor()
@@ -52,32 +43,11 @@ def main():
         
         print("🎉 Model training completed and saved!")
         print(f"📊 Trained on {len(df)} samples")
-        print("💾 Model saved to 'data/trained_model.pkl'")
-        
-        # Test prediction
-        print("\n🧪 Testing prediction...")
-        test_sample = df.head(1)
-        predictions = model.predict(test_sample)
-        print("Test prediction:")
-        print(predictions)
         
     except Exception as e:
         print(f"❌ Error during training: {e}")
         import traceback
         traceback.print_exc()
-        
-        # Create dummy model files so app can run
-        print("\n🔄 Creating placeholder model files for app...")
-        os.makedirs('data', exist_ok=True)
-        dummy_model = HealthRiskPredictor()
-        dummy_preprocessor = HealthDataPreprocessor()
-        
-        try:
-            dummy_model.save('data/trained_model.pkl')
-            dummy_preprocessor.save('data/trained_preprocessor.pkl')
-            print("✅ Created placeholder model files")
-        except:
-            print("❌ Could not create placeholder files")
 
 if __name__ == "__main__":
     main()
