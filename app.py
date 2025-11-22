@@ -1,3 +1,24 @@
+import sys
+import os
+
+# Handle dependency issues
+try:
+    import sklearn
+    print("✅ scikit-learn imported successfully")
+except ImportError as e:
+    print(f"❌ scikit-learn import error: {e}")
+
+try:
+    import imblearn
+    print("✅ imbalanced-learn imported successfully") 
+except ImportError as e:
+    print("ℹ️ imbalanced-learn not available, using fallback methods")
+    # Define fallback if imbalanced-learn is missing
+    class DummySMOTE:
+        def fit_resample(self, X, y):
+            return X, y
+
+
 import streamlit as st
 import pandas as pd
 import numpy as np
